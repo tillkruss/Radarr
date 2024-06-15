@@ -13,6 +13,7 @@ namespace NzbDrone.Core.Notifications.Webhook
         public string FilePath { get; set; }
         public string ReleaseDate { get; set; }
         public string FolderPath { get; set; }
+        public string RemotePoster { get; set; }
         public int TmdbId { get; set; }
         public string ImdbId { get; set; }
         public string Overview { get; set; }
@@ -29,10 +30,18 @@ namespace NzbDrone.Core.Notifications.Webhook
             Year = movie.Year;
             ReleaseDate = movie.MovieMetadata.Value.PhysicalReleaseDate().ToString("yyyy-MM-dd");
             FolderPath = movie.Path;
+            PosterUrl = movie.Path;
             TmdbId = movie.TmdbId;
             ImdbId = movie.ImdbId;
             Overview = movie.MovieMetadata.Value.Overview;
             Tags = tags;
+
+            var poster = movie.MovieMetadata.Value.Images.FirstOrDefault(c => c.CoverType == MediaCoverTypes.Poster);
+
+            if (poster != null)
+            {
+                RemotePoster = poster.RemoteUrl;
+            }
         }
 
         public WebhookMovie(Movie movie, MovieFile movieFile, List<string> tags)
